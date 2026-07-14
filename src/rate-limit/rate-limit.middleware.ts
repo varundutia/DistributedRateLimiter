@@ -34,7 +34,11 @@ export class RateLimitMiddleware implements NestMiddleware {
   }
 
   private attachHeaders(res: Response, decision: RateLimitDecision): void {
-    res.setHeader('RateLimit-Policy', `${decision.limit};w=${decision.resetAt}`);
+    const windowSeconds = Math.ceil(
+      this.rateLimitService.getConfig().windowMs / 1000,
+    );
+
+    res.setHeader('RateLimit-Policy', `${decision.limit};w=${windowSeconds}`);
     res.setHeader('RateLimit-Limit', decision.limit.toString());
     res.setHeader('RateLimit-Remaining', decision.remaining.toString());
     res.setHeader('RateLimit-Reset', Math.ceil(decision.resetAt / 1000).toString());
