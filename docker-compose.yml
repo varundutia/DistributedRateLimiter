@@ -1,0 +1,19 @@
+services:
+  api:
+    build: .
+    environment:
+      PORT: 3000
+      REDIS_URL: redis://redis:6379
+      RATE_LIMIT_ALGORITHM: token-bucket
+      RATE_LIMIT_MAX: 10
+      RATE_LIMIT_WINDOW_MS: 60000
+      RATE_LIMIT_KEY_PREFIX: demo
+    ports:
+      - "3000:3000"
+    depends_on:
+      - redis
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
